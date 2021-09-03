@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="icon" type="image/png" href="resources/public/favicon.png">
+
+    <style type="text/css">
+
+        .login_container{
+            overflow: hidden;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;"
+        }
+
+        .login_form{
+            width: 450px;
+            border-radius: 10px;
+            padding: 25px;
+            background-color: whitesmoke;
+        }
+
+        .my-3 {
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        .full-width {
+            width: 100%;
+        }
+
+        /*!*ui elemts*!*/
+
+        .el-button--primary {
+            color: #FFFFFF !important;
+            background-color: #8B222E !important;
+            border-color: #8B222E !important;
+        }
+
+        .el-input__inner:hover{
+            border-color:#8B222E !important;
+        }
+
+        .el-input__inner:focus{
+            border-color:#8B222E !important;
+        }
+    </style>
+
+    <script src="resources/public/vue.js"></script>
+
+    <link href="resources/public/element-ui.css" rel="stylesheet">
+</head>
+
+<div id="app" class="login_container">
+
+    <div class="login_form">
+        <div style="text-align: center; background: rgb(139, 34, 47);">
+            <img class="" alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAAA2CAYAAABJGzIJAAAABHNCSVQICAgIfAhkiAAAEW5JREFUeF7tnHlcFFe2x39VvVR3IwqIgOACLgiKgIK4iwsiKmpiFp+JvmhMXjZNzP6SyZt5+WScT2biTObFMXkzMcmoMZoRVMQFBUURFxBFjbtE4y6iyCL0WlXvc24vdgsoTkbtPOr+o1bVvffce759tns/cp90iZOhNGUHvGQHOAVIL9GEIgbbAQVIBQSv2gEFSK9ShyKMAqTCgFftgAKkV6lDEUYBUmHAq3ZAAdKr1KEIowCpMOBVO6AA6VXqUIRRgFQY8KodUID0KnUowihAKgx41Q4oQHqVOhRhFCAVBrxqBxQgvUodijAKkAoDXrUDCpBepQ5FmPsGpH9EJ3QfM+qf3mFZlnF0VTbqKq6zMfwiOiGsbxyOZW2EZLM1Om6r4CC0j49BWe42yJLU5Nw6vzbsu4AuEbh88DAu7TvQ4FuxXQCkwLb257IE1YXL4G/Ws39KPnrIBj1UFZWuftbuEVCX/QROlkFX8MWwEMi+PlBdrgBXXQOOhlGpIAYHQnWpHPTAFtEJ6jPnWR9ns3VoD/5aJXiTGSSDGBIESLfe89crob5SAZnjIIYGQ27lA768AnyVfQ4mn1YDsVMYOEkCT3JbrP+0Hh50x/sCJKdSYc7BQmj1+p+1niuHj+LbSU+BV6vx3NZs+IaGYMf8z1D8v980Ou7TmUsREheDTe/9Nw6vzGrwTVhiHwx79zW06xEJjUEPjuNgqq7GwsQRDQCunzIJsk4ACGyOA2QZQmERA8iUPBBiUFv4rFznmqPu35+Afk0O+JpaGMeOgBTUjvWhpvrxJwg798IW3Q2WpL4wLMuE5N8GpvGjodl7ANojJ1zj1D82HpojJ6A5Xgbj6GRIocGAKNplAMBfugJd/k6Y6B2D1S6f+kQZhKJSiP6tYUobCWg09jGtNujyC6G6UvGzdPGgOt8XIAmgN06U2PfDaIRkbdyi3b5IbSsfcDxvN0qyjJ3/8zn2LPgSQ96ag/4vPssAstTX45vUyai9fKXBHs3IyURg967Y8uHHKF2ywvWe5CEQ46dNgVqrtVsRSYLNaMTF0kPIfOalBmPVTX0E6vIKaAv3QuY5WIb2hxjYFj7LV8M0YhDEdoHw+cdaTyCzciALAkzjRkHYuBWqqmrYwjvCMjAR+hVrIHYNhyWpDwxLMyAF+ME0PgUQJeg2boHK4QnqH0+3A3nsFIypyeAsVgi79tLlfvtcog1iaAjMIwZDt3k7OJqjSydYE+Jg+G4VzMkDIfn6Qpe7nYFqHjaAddNv3PqgmPpZ89x3ILNfexun83feVcj+L89C0vMzwJNbs1qx6b0PcSxrAwxtA/Bs7hoIvq1cYxxetRY5b/+6wZhkHTsk9cWh5Zmw3Kxj7wnwcZ/+DlHjxzCgqy9cwq4Ff8WFPXthrK5hUEo2sXEgL5dD2LabuUdTylBIQYHwWbbqjkCKAX6wJA+CLmMdeIcMYqA/VNduwNarRwMgyZ3LWg30WZvAG01oAKTZAmH7bpd8hKWVwB6UCN3qDfYwgucg+fuBv34DpvQUwCYyWJn1FLRsfL7Wvh/e3u47kKtfeBU/5hU0uQ+8Ro1xf5yHyLQUBuPNqxVY/cJclB86wvo8uugzdB0xDDazGady8xGdngZJFLHsseko/+HoXfe3zzP/hpH/9S777uSmPOS+/xFM1TV37UcWEioVOKMJ4HnIPgZoi/dBc7TsjkBytXUwTh4PWdCAM1vA1dRCW1wKVVUNrI0AqcveDNPIIeCra6DLLYBx8jgPC0k/As5kZvJS/KjL3wWJrHB6Cgsp6B1XexPavQegulENW4dQmEcOBmhuiwU8/aiKSj3i1Lsu/iF+8FCBpJhw8qIFCIzsxqzXud3FWDf3P1F/zZ4shPaNxZTlX0OlVmPbx3/CgaXfY0bOKvh1DMPFfaVYMXUWZPFW8kKuPSS2J9a//j6M12/AENgWs7ZkQWjVCmd3FyNz5iuQrM0L8AlIvq4e6h/PMgtp6xnJYjlD5vo7AslX10LSaCCFBUM2GGCN7AJZr4dh5VrYelAM6emy9RnZkHQ6mNNGQH3sFMTwjh5AylotNGVn7Na+phZqSogopNFqIbYPgtTKAFtEZ0CnhT5jPXsn+bWG1K4tpFY+sMVEQVV2Brrd+x4iZs2f+qEBGZE8CGPnz4MhwJ/Fi6VLV2D7x3+GaLZbA2rTs1cguGcUblZcw9cpj8By8yZ6Tk7H2D98xN5nvfQGynLz7dZDrcYr+7dD8PFB9qvv4MT6zejzzFSM+vW7LI5dPP5JVJ093+ydYTGkw2VTJ1vH9jCPGAKfJSthTuoDW7cIFrORC5U0ahifmgz9ymzIghbW3tEQdhQxq0RZtWlcij2G7NK5USDJnVpiomBNiGXykUV1xZAmC3QFt1w2vafs29Y1HNo9+9n8trAQmFOGwbBsFawxPcBV10Jz5hzL9s2jhrAfhH5dbrPX/jA/fChAJjw3DcPensssn81iwZbf/A6HM9Z6ZLrRk8Zh3Pzfshhw7Zx3cHLDZvs+cRymrfoWIbG9UHXuApakPwlLXT14jQZzSgug0eux/o33Wfz55Ld/Q6eBSSjbsg1r/mPuPe0zAUnuV3PyNEtqbL0iIfMq+KzMhuRjgPGJCVCdOQvV5avMFZP7NKzIYtbJNHEM1KdOg6+sYu8oxtNnboAtunuTQDJ4hg+EGN4J2qL9LiDdLSRbflU1OHAwjRkOVRnNUQ1bZFeW0evXboJlcD/YOoZBc/QEKzPZekdDc+gotAfsIZC3twcKpErQIu33HyIqPY256Nor5Vjz4usNYkGVVoPn8tfBNyQYF0sP4vupszwy9dCEOEz57isGdOGnC7HnL182APJ4dg5e3psPvV8bbPv4U5R8ufiedGFMHQY5wN/eRwa4G1UQCovB1xvtdcZOobD2iYWsFxh42p17mYunRm7aSi5eEMBVVkHYXcISHKoxWhLjGDgUk5pSh0O/Lg+cwyvIajVMY5KhOXwc6rMXYR7Ql7lw98ZfvsqSHJqDAIdOB67yBrOWqtqbrAZp7RfPMnGCVPXTeWj3HQT3C/n/SR4okFNXLkZon1gG4/nifcie/Tbqr98qLjs3fvgHbyFhxtPsn0vSp6Di+MkGME364o/onjoKlro6fDNmMuquVXpYyFM5WzC7tABqQcCGtz7A0dW3aobNIVOm8pNaZf+U4lRRdBWemW55cpYcS3zgLNQ76o6sCE7f0DuqITob9eF4e/bLxuDBiSL71lnUJmtMhXA2BtUeSQ76k8UGMuvrLKSz9yQjzUGDyI5+bG7e/kNq5IDAOZ9rHbfByor7NGUjELNHjppog310zN+c/W3qmwcK5IxNmQiICEfpt99j27z5HgmJU0BKRJ7PX8cK14czspDz7m8alZ0SopkbM0G1SyoD5f7qI8zef8tlH1+3Ca+UbIOutS+2/vYT7P9m2T3tkzFtBOBIgDhRgursBajPnHOcuPAwpqey7Na9aUsOQNbroC6/5npM0Fjje4KSHSrXMLgdjSyqtuQgbN3DoTn+YwP56ETI2rMHS05oYirxaI6edJWTLL2jIQYFukDkaLzSH5irtvaJgbDLXgt2bwSaeXASdIXFEH19YBmcBLid5HA2G3QFe2CcMBq67FzXD8U5hiWuJysjUa2TGsWnnNHI/s48AVUlfkZ7oEASZP4RnXH1yPEmRX7s64WISB7MyjyLRqTjZnnTJwzJ77+BxGens9iTMu4nFn/hEUM+lbGEWeRj2Ruxfu5797RN9ZPGwJC1yW7pNGpYYnsyyyCUHGQKp2SB1frcGn1rmpACXXaeS5HWbuHgyM37+0F14RID06MPudjYaGhLDnk8p+zZPKgfA4x3HFFKbf1hSYhlMaaquhbm/n2hPXiElX5YGBEaDFtkF2j3HYLxkbHQ5Wz1ON6kCWxBgTCnDIXPd6sh+reB1NoXmrMXGuxN3dOPQV12mpWM3Jt5cD926uRsJINQtP+e9vZOHz9QIO8mdWBUd0zPWs5iwx3zF6Doi6/u2IUAn7l5NVq3D8HFklIExURDo9O5kpr+Lz+HoW/OhqmmFl+NmgBjZdXdRHC9dwLpfMCSjiFJ0O7/gdUXGwOSvq2fmApdTr7r/Lj+0bHQr98CW/eIewLSNHwQNPt/gKrGE2CxlQ+sA/pCyNsBixuQzFpxgGnsSJbhmwclsvBAtynf5XplFQ/juFFQVddAKCi6I5D1j08Af+ky8wqUuDlDihYFJLn0wG5dUXftOr4aNdF12nInipxlIIpLnc2ZZbfuEIpnN69mceTJnDxkz3nnjpcu3Oe5HUh6J2nVsCbGQVt0AObRyRC277rVxWhiShOD20E26NiZt8TzsCQPgJC/i53S8BXXwTvdPMWkFitzf7dbSGaBhyRB53ZC42GlBiZCu/8QLPEx0Jwos1tIumzRKYxl+eTWyWXzF6+wEEJ7+ASzoNaobuBNJogdQyHsKGZA0nGo5sIl+/AUAzqK8ASkISMb9ZPSoMsrcCVsLQbIyHGjMeGzP7B9yZjxEs4W7mmeNWNloKUIiY1pACQ9GPLWbPR/cRZ7t3fRYuz800KIzbj90hiQDJSUIRDyClH/5ESoHAV8GlvYssOVQFBfOgq0RneHqrwCKkf5x9apAyhGo8ZVV0MoPtAokJJOgDU+BsKexovZlvheUJ8+x8aXAtrY55Vl8JfKoSH4fH0YkNrCYphSkyFs2QloNTAPHwT9+jyYhya5gLQMHWA/jaJG8aPjmNcJJK3ZODGVrYfmaRFA0vHhCzty4NMuENdOlmHZ5GmQ3IL/psmUGVxhifGYsmwRK45Tc1pI+jvVJx//++fo2D+RvSs/fBTbf/9nVBw9AWu9ESIB4nb9yzlXY0CKdALSPhjqk6ebdNnU3zh6GHObdHmCbgBRJk31yObGkCzxGDWUueVbdt9hxCh0GDEIQsEeWBLjXTGk+x5JDiCZW/ZrDWvf3iw7p+NFvs7oAWRTMaQTSBqXzudZsX/7blbn/H8fQw7/1ZtImDnNfh2sqhpWU/MyNUpm8ufNB5V4Ji78BJFpo+1Avv4ejq3d6NKRWq/DxL98gohhg1mhnU6GKGkyXq/EmYKdyP1gXgPm3YG0JzYaGNNToF+9kZVzmoohmQIpWQhpBzEwALodxWzsewGSvjcn9Gb1TXZf0iGdvf4ZxmqMZD3dk5qmgKQ+lgF9WQnImXy4W8jmAMnkoRCgqhoSzf2LS2pUKrx2pAi8WoV/THse5/c0LD+4b+Dz29ejdVgoA/JeG8WGa195C607tMfMnFVQ63TIeul1dkn39tbr8QkY+uar7AYRgem8zrYgfihk93ohJSePpkG3uYBl1qQ0S794CAW72QUGcmOm1GHMSrk3rs7ogqdu6qPQb8hzZdUEJHe98lYMyciVmBu0JPSG5qDbRRGrDZzVBkps6AobnacTUbYunSG2DWBulWqFzQGSpnGWE12JiZvLpmt06ouOGJI+lgDeaGS3jgwZnrVb44RUBiVZf2f7RWTZJGxwTBTChw1C0edf35Ux37D26Dt9Cuhi7700ujm+/+/LcbP8KusWlhCPoF5RKF36faNu2Dm2f3hndBk5BG27dcG5PSU47mZNnd9YekcBjgu63LUbUJ+7cCtbpXuZ/eIaiEqlG2ch2tqjC9SnzoBz3PYW2/qx82cPgI0mFvNZE3qDFeIdjeJOOqlhzPq1gRjegf0wqBZKVtMJFl2uoNvizjmc/WWNGiKFFufsY9zeqDxEt9YlQQNrXC9Pmci1lxyCtUdXaE541kYJbLowzG68OxolcSTvv6rdl7LPv0o4ZZyWtwMKkC1P5169YgVIr1ZPyxNOAbLl6dyrV6wA6dXqaXnCKUC2PJ179YoVIL1aPS1POAXIlqdzr16xAqRXq6flCacA2fJ07tUrVoD0avW0POEUIFuezr16xQqQXq2eliecAmTL07lXr1gB0qvV0/KEU4BseTr36hUrQHq1elqecP8HJ9lY4VgiIloAAAAASUVORK5CYII=">
+        </div>
+
+        <el-form action="j_security_check" method=post>
+            <el-form-item prop="user" class="my-3" >
+                <el-input
+                        name="j_username"
+                        v-model="user"
+                        placeholder="user"
+                        clearable
+                        prefix-icon="el-icon-eleme"></el-input>
+            </el-form-item>
+            <el-form-item prop="password" class="my-3">
+                <el-input
+                        name="j_password"
+                        v-model="pass"
+                        type="password"
+                        placeholder="**********"
+                        clearable
+                        prefix-icon="el-icon-date"></el-input>
+            </el-form-item>
+
+            <el-button
+                    class="full-width"
+                    type="primary"
+                    native-type="submit"
+                    icon="el-icon-mouse">
+                Sign In</el-button>
+
+        </el-form>
+        <br/>
+        <div v-if="error">
+            <el-alert
+                    :title="error"
+                    type="error"
+                    show-icon>
+            </el-alert>
+        </div>
+    </div>
+</div>
+<script src="resources/public/element-ui.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#app',
+        data:{
+            user: '',
+            pass: '',
+            error: ''
+        },
+        created(){
+            var currentUrl = window.location.pathname;
+            var n = currentUrl.includes("j_security_check");
+            if(n){
+                console.log('error ...');
+                this.error = 'Wrong user name or password';
+            }
+        }
+    })
+</script>
+</html>

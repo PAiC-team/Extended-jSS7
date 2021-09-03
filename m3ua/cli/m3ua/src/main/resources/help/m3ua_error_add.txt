@@ -1,0 +1,30 @@
+Name
+	m3ua error add
+
+SYNOPSIS
+	m3ua error add <error-code> <error-name> <retry>
+
+DESCRIPTION
+	This command is used to add and error configuration to the M3UA error management. If
+	the error code does not exist, the add operation shall add a new error configuration
+	to the M3UA error management. However, if the error code already exists, the add operation will
+	update the existing error configuration.
+
+PARAMETERS
+
+	Mandatory Parameters
+
+	<error-code>        -   The error code as defined in the M3UA standard
+
+	<error-name>        -   The name of the error code
+
+	<retry>             -   The retry mechanism. When retry = -1, it will retry infinitely.
+	                        When retry = 0, it will NOT retry and any number provided, the retry
+	                        scheme will retry the same number of times.
+
+SEE ALSO
+	m3ua, m3ua as create, m3ua as destroy, m3ua asp create, m3ua asp destroy,
+	m3ua asp show, m3ua asp start, m3ua asp stop, m3ua as add, m3ua as remove,
+	m3ua route add, m3ua route remove, m3ua route show.
+
+

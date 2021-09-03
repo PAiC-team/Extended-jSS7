@@ -1,0 +1,22 @@
+Name
+	m3ua error show
+
+SYNOPSIS
+	m3ua error show
+
+DESCRIPTION
+	This command is used to view the configuration of M3UA error handling.
+    The information displayed will list all the errors configured that include
+    the error name, the error code and the retry scheme. When the retry scheme is
+    -1, it indicates an infinity retry.
+
+PARAMETERS
+
+	Optional Parameters
+
+SEE ALSO
+	m3ua, m3ua as create, m3ua as destroy, m3ua asp create, m3ua asp destroy,
+	m3ua asp show, m3ua asp start, m3ua asp stop, m3ua as add, m3ua as remove,
+	m3ua route add, m3ua route remove, m3ua route show.
+
+

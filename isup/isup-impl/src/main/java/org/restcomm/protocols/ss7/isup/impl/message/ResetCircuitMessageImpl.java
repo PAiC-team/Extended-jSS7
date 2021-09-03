@@ -1,0 +1,101 @@
+package org.restcomm.protocols.ss7.isup.impl.message;
+
+import java.util.Map;
+import java.util.Set;
+
+import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
+import org.restcomm.protocols.ss7.isup.ParameterException;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.MessageTypeImpl;
+import org.restcomm.protocols.ss7.isup.message.ResetCircuitMessage;
+import org.restcomm.protocols.ss7.isup.message.parameter.MessageName;
+import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
+
+/**
+ * Start time:00:05:51 2009-09-07<br>
+ * Project: mobicents-isup-stack<br>
+ *
+ * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
+ */
+public class ResetCircuitMessageImpl extends ISUPMessageImpl implements ResetCircuitMessage {
+    // reset indication I think.
+    public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.ResetCircuit);
+
+    private static final int _MANDATORY_VAR_COUNT = 0;
+
+    static final int _INDEX_F_MessageType = 0;
+
+    ResetCircuitMessageImpl(Set<Integer> mandatoryCodes, Set<Integer> mandatoryVariableCodes, Set<Integer> optionalCodes,
+            Map<Integer, Integer> mandatoryCode2Index, Map<Integer, Integer> mandatoryVariableCode2Index,
+            Map<Integer, Integer> optionalCode2Index) {
+        super(mandatoryCodes, mandatoryVariableCodes, optionalCodes, mandatoryCode2Index, mandatoryVariableCode2Index,
+                optionalCode2Index);
+
+        super.f_Parameters.put(_INDEX_F_MessageType, this.getMessageType());
+
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryVariableBody(byte [], int)
+     */
+
+    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, int parameterIndex)
+            throws ParameterException {
+        throw new UnsupportedOperationException("This message does not support mandatory variable parameters.");
+
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeOptionalBody(byte[], byte)
+     */
+
+    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, byte parameterCode)
+            throws ParameterException {
+        throw new UnsupportedOperationException("This message does not support optional parameters.");
+
+    }
+
+    protected int decodeMandatoryVariableParameters(ISUPParameterFactory parameterFactory, byte[] b, int index)
+            throws ParameterException {
+        throw new UnsupportedOperationException("This message does not support mandatory variable parameters.");
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#getMessageType()
+     */
+
+    public MessageType getMessageType() {
+        return this._MESSAGE_TYPE;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @seeorg.restcomm.protocols.ss7.isup.ISUPMessageImpl# getNumberOfMandatoryVariableLengthParameters()
+     */
+
+    protected int getNumberOfMandatoryVariableLengthParameters() {
+        return _MANDATORY_VAR_COUNT;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#hasAllMandatoryParameters()
+     */
+
+    public boolean hasAllMandatoryParameters() {
+        return true;
+    }
+
+    protected boolean optionalPartIsPossible() {
+
+        return false;
+    }
+
+}

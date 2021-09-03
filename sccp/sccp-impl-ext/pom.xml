@@ -1,0 +1,171 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>sccp-parent</artifactId>
+		<groupId>org.restcomm.protocols.ss7.sccp</groupId>
+		<version>8.3.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>sccp-impl-ext</artifactId>
+
+	<name>Restcomm jSS7 :: Extended-SCCP :: Impl-Ext :: ${project.artifactId}</name>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>sccp-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>sccp-impl</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.restcomm.protocols.ss7.ss7ext</groupId>
+			<artifactId>ss7-ext-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.restcomm.protocols.ss7.ss7ext</groupId>
+			<artifactId>ss7-ext-impl</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>sccp-api-ext</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<artifactId>m3ua-impl</artifactId>
+			<groupId>org.restcomm.protocols.ss7.m3ua</groupId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+<!--
+		<dependency>
+			<groupId>org.restcomm.protocols.ss7.management</groupId>
+			<artifactId>shell-server-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<artifactId>mtp-api</artifactId>
+			<groupId>org.restcomm.protocols.ss7.mtp</groupId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.restcomm.protocols.ss7.mtp</groupId>
+			<artifactId>mtp</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+-->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>concurrent</groupId>
+			<artifactId>concurrent</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javolution</groupId>
+			<artifactId>javolution</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<finalName>${project.artifactId}-${project.version}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>
+					${maven-surefire-plugin.version}
+				</version>
+
+				<configuration>
+					<suiteXmlFiles>
+						<suiteXmlFile>testng-methods.xml</suiteXmlFile>
+						<suiteXmlFile>testng-classes.xml</suiteXmlFile>
+					</suiteXmlFiles>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<addMavenDescriptor>false</addMavenDescriptor>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>test</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.testng</groupId>
+					<artifactId>testng</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>org.restcomm.protocols.ss7.sccp</groupId>
+					<artifactId>sccp-impl</artifactId>
+					<version>${project.version}</version>
+					<type>test-jar</type>
+					<scope>test</scope>
+				</dependency>
+			<dependency>
+				<groupId>org.restcomm.protocols.ss7.ss7ext</groupId>
+				<artifactId>ss7-ext-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+<!--
+				<dependency>
+					<groupId>org.restcomm.protocols.ss7.sccp</groupId>
+					<artifactId>sccp-impl</artifactId>
+					<version>${project.version}</version>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.restcomm.protocols.ss7.mtp</groupId>
+					<artifactId>mtp-api</artifactId>
+					<version>${project.version}</version>
+					<scope>test</scope>
+				</dependency>
+-->
+			</dependencies>
+		</profile>
+		<profile>
+			<id>mvn-test-skip</id>
+			<activation>
+				<property>
+					<name>maven.test.skip</name>
+					<value>true</value>
+				</property>
+			</activation>
+		</profile>
+	</profiles>
+</project>

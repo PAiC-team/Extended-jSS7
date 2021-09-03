@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<longMessageRule/>
+<sap>
+	<id value="1"/>
+	<value mtp3Id="1" opc="1002" ni="2" networkId="0">
+		<mtp3DestinationMap/>
+	</value>
+</sap>

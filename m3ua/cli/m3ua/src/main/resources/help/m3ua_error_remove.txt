@@ -1,0 +1,19 @@
+Name
+	m3ua error remove <error-code>
+
+SYNOPSIS
+	m3ua error remove <error-code>
+
+DESCRIPTION
+	This command is used to remove error configuration from the M3UA error management list.
+
+PARAMETERS
+
+
+SEE ALSO
+	m3ua, m3ua as create, m3ua as destroy, m3ua asp create, m3ua asp destroy,
+	m3ua asp show, m3ua asp start, m3ua asp stop, m3ua as add, m3ua as remove,
+	m3ua route add, m3ua route remove, m3ua route show, m3ua error show,
+	m3ua error add.
+
+

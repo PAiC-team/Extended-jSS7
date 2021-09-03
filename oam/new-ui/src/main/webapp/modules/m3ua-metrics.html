@@ -1,0 +1,510 @@
+				<h3 style="margin: 0px;"><i class="icon-bar-chart"></i> SS7 Metrics</h3>
+				<hr style="margin: 10 0px;"/>
+				
+				<span class="span5 offset7">
+					<span class="input-prepend" data-toggle="tooltip" data-placement="bottom" title="select the refresh rate at which page will be refreshed">
+					<span class="add-on">Refresh Rate</span>
+					<select id="refresh-rate-select" onchange="refreshRate()">
+						<option value="5000">5 Sec</option>
+						<option value="10000">10 Sec</option>
+						<option value="15000">15 Sec</option>
+						<option value="20000">20 Sec</option>
+						<option value="30000">30 Sec</option>
+						<option selected="selected" value="60000">60 Sec</option>
+						<option value="300000">5 Min</option>
+						<option value="600000">10 Min</option>
+						<option value="900000">15 Min</option>
+						<option value="1200000">20 Min</option>
+						<option value="1800000">30 Min</option>
+						<option value="3600000">60 Min</option>
+					</select>
+					</span>					
+					<button id="refresh" style="float: right; margin-right: 20px; margin-left: 20px; height: 30px;" class="btn btn-medium btn-success" data-toggle="tooltip" data-placement="left" onclick="updateGraphs();" data-original-title="Refresh Graph"><i class="icon-refresh"></i></button>
+				</span>
+				
+				<span id="ras-table-wrapper">
+					<table id="no-campaigns-table" class="table" style="display: none;">
+						<tr>
+							<td>
+								<div class="alert alert-info fade in">
+									<strong>No Campaigns defined yet!</strong> 
+								</div>
+							</td>
+						</tr>
+					</table>
+					<table id="no-associations-table" class="table" style="display: none;">
+						<tr>
+							<td>
+								<div class="alert alert-info fade in">
+									<strong>No Associations defined yet!</strong> 
+								</div>
+							</td>
+						</tr>
+					</table>	
+					
+					<div id="campaigns-div" class="control-group">
+						<span class="input-prepend" data-toggle="tooltip" data-placement="bottom" title="select the campaign to display the metrics graph">
+							<span class="add-on">Campaigns</span>
+							<select id="campaigns-list-select" onchange="createGraphs()">
+								<option value="Select">Select</option>
+							</select>
+						</span>
+					</div>
+					
+					<div id="associations-div" class="control-group">
+						<span class="input-prepend" data-toggle="tooltip" data-placement="bottom" title="select the association to display the M3UA metrics graph">
+							<span class="add-on">Associations</span>
+							<select id="associations-list-select" onchange="createGraphs()">
+								<option value="Select">Select</option>
+							</select>
+						</span>
+					</div>
+					
+					<input type="hidden" value="-1" id="timerIdValue"/>
+									
+					<div id="chart_div1" style="width: 900px; height: 500px;"></div>
+					<div id="chart_div2" style="width: 900px; height: 500px;"></div>
+					<div id="chart_div3" style="width: 900px; height: 500px;"></div>
+					<div id="chart_div4" style="width: 900px; height: 500px;"></div>
+					<div id="chart_div5" style="width: 900px; height: 500px;"></div>
+					<div id="chart_div6" style="width: 900px; height: 500px;"></div>
+					
+				</span>
+				
+				
+				<script type='text/javascript'>
+					//@ sourceURL=loadGoogleCharts.js
+
+					//chart1 - transfer/management TX/RX
+					var dataManagementMessages = new google.visualization.DataTable();
+					dataManagementMessages.addColumn('datetime', 'Time');
+					dataManagementMessages.addColumn('number', 'PacketsPerAssociationTx');
+					dataManagementMessages.addColumn('number', 'PacketsPerAssociationRx');
+					dataManagementMessages.addColumn('number', 'ErrorPerAssociationTx');
+					dataManagementMessages.addColumn('number', 'NotifyPerAssociationTx');
+					dataManagementMessages.addColumn('number', 'ErrorPerAssociationRx');
+					dataManagementMessages.addColumn('number', 'NotifyPerAssociationRx');
+					var options1 = {
+					          title: 'Number of data/management packets transmitted/received per association',
+					          curveType: 'function',
+					          pointSize: 5,
+					          width: 1200,
+					      	  height: 400,
+					};
+			        var dataManagementMessagesChart = new google.visualization.LineChart(document.getElementById('chart_div1'));
+			        
+			      	//chart2 - state maintenance TX
+					var stateMaintenanceMessagesTx = new google.visualization.DataTable();
+					stateMaintenanceMessagesTx.addColumn('datetime', 'Time');
+					stateMaintenanceMessagesTx.addColumn('number', 'AspUpPerAssociationTx');
+					stateMaintenanceMessagesTx.addColumn('number', 'AspUpAckPerAssociationTx');
+					stateMaintenanceMessagesTx.addColumn('number', 'AspDownPerAssociationTx');
+					stateMaintenanceMessagesTx.addColumn('number', 'AspDownAckPerAssociationTx');
+					stateMaintenanceMessagesTx.addColumn('number', 'HeartbeatPerAssociationTx');
+					stateMaintenanceMessagesTx.addColumn('number', 'HeartbeatAckPerAssociationTx');
+					var options2 = {
+					          title: 'Transmitted state maintenance messages',
+					          curveType: 'function',
+					          pointSize: 5,
+					          width: 1200,
+					      	  height: 400,
+					 };
+			        var stateMaintenanceMessagesTxChart = new google.visualization.LineChart(document.getElementById('chart_div2'));
+
+			        //chart3 - state maintenance RX
+					var stateMaintenanceMessagesRx = new google.visualization.DataTable();
+					stateMaintenanceMessagesRx.addColumn('datetime', 'Time');
+					stateMaintenanceMessagesRx.addColumn('number', 'AspUpPerAssociationRx');
+					stateMaintenanceMessagesRx.addColumn('number', 'AspUpAckPerAssociationRx');
+					stateMaintenanceMessagesRx.addColumn('number', 'AspDownPerAssociationRx');
+					stateMaintenanceMessagesRx.addColumn('number', 'AspDownAckPerAssociationRx');
+					stateMaintenanceMessagesRx.addColumn('number', 'HeartbeatPerAssociationRx');
+					stateMaintenanceMessagesRx.addColumn('number', 'HeartbeatAckPerAssociationRx');
+					var options3 = {
+					          title: 'Received state maintenance messages',
+					          curveType: 'function',
+					          pointSize: 5,
+					          width: 1200,
+					      	  height: 400,
+					 };
+			        var stateMaintenanceMessagesRxChart = new google.visualization.LineChart(document.getElementById('chart_div3'));
+			        
+			      	//chart4 - traffic maintenance TX/RX
+					var trafficMaintenanceMessages = new google.visualization.DataTable();
+					trafficMaintenanceMessages.addColumn('datetime', 'Time');
+					trafficMaintenanceMessages.addColumn('number', 'AspActivePerAssociationTx');
+					trafficMaintenanceMessages.addColumn('number', 'AspActiveAckPerAssociationTx');
+					trafficMaintenanceMessages.addColumn('number', 'AspInactivePerAssociationTx');
+					trafficMaintenanceMessages.addColumn('number', 'AspInactiveAckPerAssociationTx');
+					trafficMaintenanceMessages.addColumn('number', 'AspActivePerAssociationRx');
+					trafficMaintenanceMessages.addColumn('number', 'AspActiveAckPerAssociationRx');
+					trafficMaintenanceMessages.addColumn('number', 'AspInactivePerAssociationRx');
+					trafficMaintenanceMessages.addColumn('number', 'AspInactiveAckPerAssociationRx');
+					var options4 = {
+					          title: 'Traffic maintenance messages',
+					          curveType: 'function',
+					          pointSize: 5,
+					          width: 1200,
+					      	  height: 400,
+					 };
+			        var trafficMaintenanceMessagesChart = new google.visualization.LineChart(document.getElementById('chart_div4'));
+
+			      	//chart5 - signaling network maintenance TX
+					var signalingNetworkMaintenanceMessagesTx = new google.visualization.DataTable();
+					signalingNetworkMaintenanceMessagesTx.addColumn('datetime', 'Time');
+					signalingNetworkMaintenanceMessagesTx.addColumn('number', 'DunaPerAssociationTx');
+					signalingNetworkMaintenanceMessagesTx.addColumn('number', 'DavaPerAssociationTx');
+					signalingNetworkMaintenanceMessagesTx.addColumn('number', 'DaudPerAssociationTx');
+					signalingNetworkMaintenanceMessagesTx.addColumn('number', 'SconPerAssociationTx');
+					signalingNetworkMaintenanceMessagesTx.addColumn('number', 'DupuPerAssociationTx');
+					signalingNetworkMaintenanceMessagesTx.addColumn('number', 'DrstPerAssociationTx');
+
+					var options5 = {
+					          title: 'Transmitted signaling network maintenance messages',
+					          curveType: 'function',
+					          pointSize: 5,
+					          width: 1200,
+					      	  height: 400,
+					 };
+			        var signalingNetworkMaintenanceMessagesTxChart = new google.visualization.LineChart(document.getElementById('chart_div5'));
+			        
+			      	//chart6 - signaling network maintenance RX
+					var signalingNetworkMaintenanceMessagesRx = new google.visualization.DataTable();
+					signalingNetworkMaintenanceMessagesRx.addColumn('datetime', 'Time');
+					signalingNetworkMaintenanceMessagesRx.addColumn('number', 'DunaPerAssociationRx');
+					signalingNetworkMaintenanceMessagesRx.addColumn('number', 'DavaPerAssociationRx');
+					signalingNetworkMaintenanceMessagesRx.addColumn('number', 'DaudPerAssociationRx');
+					signalingNetworkMaintenanceMessagesRx.addColumn('number', 'SconPerAssociationRx');
+					signalingNetworkMaintenanceMessagesRx.addColumn('number', 'DupuPerAssociationRx');
+					signalingNetworkMaintenanceMessagesRx.addColumn('number', 'DrstPerAssociationRx');
+
+					var options6 = {
+					          title: 'Received signaling network maintenance messages',
+					          curveType: 'function',
+					          pointSize: 5,
+					          width: 1200,
+					      	  height: 400,
+					 };
+			        var signalingNetworkMaintenanceMessagesRxChart = new google.visualization.LineChart(document.getElementById('chart_div6'));
+			        
+			        
+					function drawCharts() {
+				        dataManagementMessagesChart.draw(dataManagementMessages, options1);
+				        stateMaintenanceMessagesTxChart.draw(stateMaintenanceMessagesTx, options2);
+				        stateMaintenanceMessagesRxChart.draw(stateMaintenanceMessagesRx, options3);
+				        trafficMaintenanceMessagesChart.draw(trafficMaintenanceMessages, options4);
+				        signalingNetworkMaintenanceMessagesTxChart.draw(signalingNetworkMaintenanceMessagesTx, options5);
+				        signalingNetworkMaintenanceMessagesRxChart.draw(signalingNetworkMaintenanceMessagesRx, options6);
+					}
+					
+					function refreshCampaignsList(){
+						
+						jolokia.request(
+								[
+									{ type: "read", mbean: "org.restcomm.ss7:layer=COUNTER,name=CounterHost,type=Management"}
+								],
+								{ success: 
+									function(response) {
+										var noOfCampaigns = 0 ;
+										var campaignsList = response.value.CampaignsList;
+										
+										jQuery.each(campaignsList, function() {
+											noOfCampaigns = noOfCampaigns + 1;
+											$('#campaigns-list-select').append('<option value='+this+'>'+this+'</option>')										
+										});	
+									
+										if(noOfCampaigns == 0){
+											$('#no-campaigns-table').show();
+											$('#campaigns-div').hide();
+										}else {
+											$('#no-campaigns-table').hide();
+											$('#campaigns-div').show();
+										}	
+
+									},
+									error: function(value) {
+										errorUID = ("st" + new Date().getTime()).hashCode();
+										createStackTrace(errorUID, value.stacktrace);
+										logToConsole("ERROR", value.error + ". (<a href=\"#" + errorUID + "-modal\" data-toggle=\"modal\">Full Stack Trace</a>)");
+									} 
+								}
+							);
+					}
+
+					function refreshAssociationsList(){
+						
+						jolokia.request(
+								[
+									{ type: "read", mbean: "org.restcomm.ss7:layer=SCTP,type=Management,name=*"}
+								],
+								{ success: 
+									function(response) {
+									var noOfAssociations = 0 ;
+									var obj = response.value;
+									jQuery.each(obj, function() {
+										var currAss = this.Associations
+										jQuery.each(currAss, function() {
+											noOfAssociations = noOfAssociations + 1;
+											$('#associations-list-select').append('<option value='+this.name+'>'+this.name+'</option>')
+											
+										});
+									});
+									
+									if(noOfAssociations == 0){
+										$('#no-associations-table').show();
+										$('#associations-div').hide();
+									}else {
+										$('#no-associations-table').hide();
+										$('#associations-div').show();
+									}	
+
+									},
+									error: function(value) {
+										errorUID = ("st" + new Date().getTime()).hashCode();
+										createStackTrace(errorUID, value.stacktrace);
+										logToConsole("ERROR", value.error + ". (<a href=\"#" + errorUID + "-modal\" data-toggle=\"modal\">Full Stack Trace</a>)");
+									} 
+								}
+							);
+					}
+
+				function refreshRate() {
+					var timerIdValue = document.getElementById("timerIdValue").value;
+					clearInterval(timerIdValue);
+					
+					var e = document.getElementById("refresh-rate-select");
+					var refreshRate = e.options[e.selectedIndex].value;
+					var timerId = setAutoCancellableInterval(refreshRate, "updateGraphs", "SS7 Metrics");
+					
+					$("#timerIdValue").val(timerId);
+				}
+					
+				function createGraphs() {
+					//Remove all rows
+					var numRows = dataManagementMessages.getNumberOfRows();
+					if(numRows != 0){
+						dataManagementMessages.removeRows(0, numRows)
+					}
+					numRows = stateMaintenanceMessagesTx.getNumberOfRows();
+					if(numRows != 0){
+						stateMaintenanceMessagesTx.removeRows(0, numRows)
+					}
+					numRows = stateMaintenanceMessagesRx.getNumberOfRows();
+					if(numRows != 0){
+						stateMaintenanceMessagesRx.removeRows(0, numRows)
+					}
+					numRows = trafficMaintenanceMessages.getNumberOfRows();
+					if(numRows != 0){
+						trafficMaintenanceMessages.removeRows(0, numRows)
+					}
+					numRows = signalingNetworkMaintenanceMessagesTx.getNumberOfRows();
+					if(numRows != 0){
+						signalingNetworkMaintenanceMessagesTx.removeRows(0, numRows)
+					}
+					numRows = signalingNetworkMaintenanceMessagesRx.getNumberOfRows();
+					if(numRows != 0){
+						signalingNetworkMaintenanceMessagesRx.removeRows(0, numRows)
+					}
+					
+					updateGraphs();
+					var timerIdValue = document.getElementById("timerIdValue").value;
+					
+					if(timerIdValue == "-1"){
+						var timerId = setAutoCancellableInterval(60000, "updateGraphs", "SS7 Metrics");
+						$("#timerIdValue").val(timerId);
+					}
+				}
+				
+				function updateGraphs() {
+					
+					var e1 = document.getElementById("campaigns-list-select");
+					var e2 = document.getElementById("associations-list-select");
+					var option1 = e1.options[e1.selectedIndex].text;
+					var option2 = e2.options[e2.selectedIndex].text;
+					
+					if(option1 == "Select" || option2 == "Select"){						
+						return;
+					}
+					
+					
+					jolokia.request(
+						[ 
+							{ type: "exec", mbean: "org.restcomm.ss7:layer=COUNTER,name=CounterHost,type=Management", operation: "getLastCounterValues", arguments: [option1]},
+						],
+						{ success: [ 
+							function(response) {
+								if(response.value == null){
+									logToConsole("ERROR", "Last CounterValueSet Does not exist");
+									return;
+								}
+								var counterValues = response.value.counterValues;
+								//1
+								var packetsPerAssociationTx = 0;
+								var packetsPerAssociationRx = 0;
+								var errorPerAssociationTx = 0;
+								var notifyPerAssociationTx = 0;
+								var errorPerAssociationRx = 0;
+								var notifyPerAssociationRx = 0;
+								//2
+								var aspUpPerAssociationTx = 0;
+								var aspUpAckPerAssociationTx = 0;
+								var aspDownPerAssociationTx = 0;
+								var aspDownAckPerAssociationTx = 0;
+								var heartbeatPerAssociationTx = 0;
+								var heartbeatAckPerAssociationTx = 0;
+								//3
+								var aspUpPerAssociationRx = 0;
+								var aspUpAckPerAssociationRx = 0;
+								var aspDownPerAssociationRx = 0;
+								var aspDownAckPerAssociationRx = 0;
+								var heartbeatPerAssociationRx = 0;
+								var heartbeatAckPerAssociationRx = 0;
+								//4
+								var aspActivePerAssociationTx = 0;
+								var aspActiveAckPerAssociationTx = 0;
+								var aspInactivePerAssociationTx = 0;
+								var aspInactiveAckPerAssociationTx = 0;
+								var aspActivePerAssociationRx = 0;
+								var aspActiveAckPerAssociationRx = 0;
+								var aspInactivePerAssociationRx = 0;
+								var aspInactiveAckPerAssociationRx = 0;
+								//5
+								var dunaPerAssociationTx = 0;
+								var davaPerAssociationTx = 0;
+								var daudPerAssociationTx = 0;
+								var sconPerAssociationTx = 0;
+								var dupuPerAssociationTx = 0;
+								var drstPerAssociationTx = 0;
+								//6
+								var dunaPerAssociationRx = 0;
+								var davaPerAssociationRx = 0;
+								var daudPerAssociationRx = 0;
+								var sconPerAssociationRx = 0;
+								var dupuPerAssociationRx = 0;
+								var drstPerAssociationRx = 0;
+								jQuery.each(counterValues, function() {
+									var val = 0;
+									for(var i=0;i<this.complexValue.length;i++) {
+										if(this.complexValue[i].key==option2) {
+											val=this.complexValue[i].value;
+											break;
+										}
+									}
+									
+									if (typeof(val) != 'undefined') {
+										if(this.counterDef.counterName == "PacketsPerAssociationTx") {
+											packetsPerAssociationTx = val;
+										} else if (this.counterDef.counterName == "PacketsPerAssociationRx") {
+											packetsPerAssociationRx = val;
+										} else if (this.counterDef.counterName == "ErrorPerAssociationTx") {
+											errorPerAssociationTx = val;
+										} else if (this.counterDef.counterName == "NotifyPerAssociationTx") {
+											notifyPerAssociationTx = val;
+										} else if (this.counterDef.counterName == "ErrorPerAssociationRx") {
+											errorPerAssociationRx = val;
+										} else if (this.counterDef.counterName == "NotifyPerAssociationRx") {
+											notifyPerAssociationRx = val;
+										}
+										
+										else if (this.counterDef.counterName == "AspUpPerAssociationTx") {
+											aspUpPerAssociationTx = val;
+										} else if (this.counterDef.counterName == "AspUpAckPerAssociationTx") {
+											aspUpAckPerAssociationTx = val;
+										} else if (this.counterDef.counterName == "AspDownPerAssociationTx") {
+											aspDownPerAssociationTx = val;
+										} else if (this.counterDef.counterName == "AspDownAckPerAssociationTx") {
+											aspDownAckPerAssociationTx = val;
+										} else if (this.counterDef.counterName == "HeartbeatPerAssociationTx") {
+											heartbeatPerAssociationTx = val;
+										} else if (this.counterDef.counterName == "HeartbeatAckPerAssociationTx") {
+											heartbeatAckPerAssociationTx = val;
+										}
+										
+										else if (this.counterDef.counterName == "AspUpPerAssociationRx") {
+											aspUpPerAssociationRx = val;
+										} else if (this.counterDef.counterName == "AspUpAckPerAssociationRx") {
+											aspUpAckPerAssociationRx = val;
+										} else if (this.counterDef.counterName == "AspDownPerAssociationRx") {
+											aspDownPerAssociationRx = val;
+										} else if (this.counterDef.counterName == "AspDownAckPerAssociationRx") {
+											aspDownAckPerAssociationRx = val;
+										} else if (this.counterDef.counterName == "HeartbeatPerAssociationRx") {
+											heartbeatPerAssociationRx = val;
+										} else if (this.counterDef.counterName == "HeartbeatAckPerAssociationRx") {
+											heartbeatAckPerAssociationRx = val;
+										}
+										
+										else if (this.counterDef.counterName == "AspActivePerAssociationTx") {
+											aspActivePerAssociationTx = val;
+										} else if (this.counterDef.counterName == "AspActiveAckPerAssociationTx") {
+											aspActiveAckPerAssociationTx = val;
+										} else if (this.counterDef.counterName == "AspInactivePerAssociationTx") {
+											aspInactivePerAssociationTx = val;
+										} else if (this.counterDef.counterName == "AspInactiveAckPerAssociationTx") {
+											aspInactiveAckPerAssociationTx = val;
+										} else if (this.counterDef.counterName == "AspActivePerAssociationRx") {
+											aspActivePerAssociationRx = val;
+										} else if (this.counterDef.counterName == "AspActiveAckPerAssociationRx") {
+											aspActiveAckPerAssociationRx = val;
+										} else if (this.counterDef.counterName == "AspInactivePerAssociationRx") {
+											aspInactivePerAssociationRx = val;
+										} else if (this.counterDef.counterName == "AspInactiveAckPerAssociationRx") {
+											aspInactiveAckPerAssociationRx = val;
+										}
+										
+										
+										else if (this.counterDef.counterName == "DunaPerAssociationTx") {
+											dunaPerAssociationTx = val;
+										} else if (this.counterDef.counterName == "DavaPerAssociationTx") {
+											davaPerAssociationTx = val;
+										} else if (this.counterDef.counterName == "DaudPerAssociationTx") {
+											daudPerAssociationTx = val;
+										} else if (this.counterDef.counterName == "SconPerAssociationTx") {
+											sconPerAssociationTx = val;
+										} else if (this.counterDef.counterName == "DupuPerAssociationTx") {
+											dupuPerAssociationTx = val;
+										} else if (this.counterDef.counterName == "DrstPerAssociationTx") {
+											drstPerAssociationTx = val;
+										}
+										
+										else if (this.counterDef.counterName == "DunaPerAssociationRx") {
+											dunaPerAssociationRx = val;
+										} else if (this.counterDef.counterName == "DavaPerAssociationRx") {
+											davaPerAssociationRx = val;
+										} else if (this.counterDef.counterName == "DaudPerAssociationRx") {
+											daudPerAssociationRx = val;
+										} else if (this.counterDef.counterName == "SconPerAssociationRx") {
+											sconPerAssociationRx = val;
+										} else if (this.counterDef.counterName == "DupuPerAssociationRx") {
+											dupuPerAssociationRx = val;
+										} else if (this.counterDef.counterName == "DrstPerAssociationRx") {
+											drstPerAssociationRx = val;
+										}
+									}
+									
+								});
+								//here
+								dataManagementMessages.addRow([(new Date()), packetsPerAssociationTx, packetsPerAssociationRx, errorPerAssociationTx, notifyPerAssociationTx, errorPerAssociationRx, notifyPerAssociationRx]);
+								stateMaintenanceMessagesTx.addRow([(new Date()),aspUpPerAssociationTx,aspUpAckPerAssociationTx,aspDownPerAssociationTx,aspDownAckPerAssociationTx,heartbeatPerAssociationTx,heartbeatAckPerAssociationTx]);
+								stateMaintenanceMessagesRx.addRow([(new Date()),aspUpPerAssociationRx,aspUpAckPerAssociationRx,aspDownPerAssociationRx,aspDownAckPerAssociationRx,heartbeatPerAssociationRx,heartbeatAckPerAssociationRx]);
+								trafficMaintenanceMessages.addRow([(new Date()),aspActivePerAssociationTx,aspActiveAckPerAssociationTx,aspInactivePerAssociationTx,aspInactiveAckPerAssociationTx,aspActivePerAssociationRx,aspActiveAckPerAssociationRx,aspInactivePerAssociationRx,aspInactiveAckPerAssociationRx]);
+								signalingNetworkMaintenanceMessagesTx.addRow([(new Date()),dunaPerAssociationTx,davaPerAssociationTx,daudPerAssociationTx,sconPerAssociationTx,dupuPerAssociationTx,drstPerAssociationTx]);
+								signalingNetworkMaintenanceMessagesRx.addRow([(new Date()),dunaPerAssociationRx,davaPerAssociationRx,daudPerAssociationRx,sconPerAssociationRx,dupuPerAssociationRx,drstPerAssociationRx]);
+								drawCharts();
+							}
+							],
+							error: function(response) {
+								alert("Jolokia request failed: " + response.error);
+							} 
+						}
+					);
+					
+					
+				}
+				$(document).ready(function () {
+					refreshCampaignsList();
+					refreshAssociationsList();
+					
+					//setAutoCancellableInterval(1000, "updateState", "SS7 Metrics");
+				});
+			</script>				
