@@ -22,5 +22,12 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
         cache: maven
+    - name: maven-settings
+      uses: s4u/maven-settings-action@v2
+      with:
+        ervers: '[{"id": "github", "username": "PAiC-team", "password": "${GITHUB_TOKEN_REF}"}]'
+        githubServer: false
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: mvn -B clean verify -Dmaven.test.skip=true --file pom.xml
+      env:
+          GITHUB_TOKEN_REF: ${{ secrets.GITHUB_ACTION_BUILD_TOKEN }}
