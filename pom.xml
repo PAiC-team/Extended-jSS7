@@ -530,6 +530,18 @@
 	<!-- repositories -->
 	<repositories>
 		<repository>
+			<id>github</id>
+			<url>https://maven.pkg.github.com/PAiC-team/*</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
 			<id>restcomm-public-repository-group</id>
 			<name>Restcomm Public Maven Repository Group</name>
 			<url>https://oss.sonatype.org/content/groups/public/</url>
@@ -561,18 +573,6 @@
 			<id>datanucleus</id>
 			<name>DataNucleus Releases</name>
 			<url>http://www.datanucleus.org/downloads/maven2</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>github</id>
-			<url>https://maven.pkg.github.com/PAiC-team/*</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>
