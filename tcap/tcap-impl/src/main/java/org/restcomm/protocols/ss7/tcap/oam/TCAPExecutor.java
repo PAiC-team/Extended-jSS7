@@ -169,7 +169,9 @@ public class TCAPExecutor implements ShellExecutor {
         } else if (parName.equals("swaptcapidbytes")) {
             boolean val = Boolean.parseBoolean(options[3]);
             this.tcapStack.setSwapTcapIdBytes(val);
-
+        } else if (parName.equals("ssn")) {
+            int val = Integer.parseInt(options[3]);
+            this.tcapStack.setSubSystemNumber(val);
         } else if (parName.equals("executordelaythreshold_1")) {
             double val = Double.parseDouble(options[3]);
             this.tcapStack.setCongControl_ExecutorDelayThreshold_1(val);

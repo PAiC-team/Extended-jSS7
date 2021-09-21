@@ -26,6 +26,7 @@ public class TcapCommandHandler extends CommandHandlerWithHelp {
         set.addChild("donotsendprotocolversion");
         set.addChild("statisticsenabled");
         set.addChild("swaptcapidbytes");
+        set.addChild("ssn");
         set.addChild("executordelaythreshold_1");
         set.addChild("executordelaythreshold_2");
         set.addChild("executordelaythreshold_3");

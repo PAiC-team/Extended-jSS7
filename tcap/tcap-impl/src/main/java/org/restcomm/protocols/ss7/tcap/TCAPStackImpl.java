@@ -50,6 +50,8 @@ public class TCAPStackImpl implements TCAPStack {
 
     private static final String SWAP_TCAP_ID_BYTES = "swaptcapidbytes";
 
+    private static final String SUB_SYSTEM_NUMBER = "ssn";
+
     private static final String CONG_CONTROL_BLOCKING_INCOMING_TCAP_MESSAGES = "congControl_blockingIncomingTcapMessages";
     private static final String CONG_CONTROL_EXECUTOR_DELAY_THRESHOLD_1 = "congControl_ExecutorDelayThreshold_1";
     private static final String CONG_CONTROL_EXECUTOR_DELAY_THRESHOLD_2 = "congControl_ExecutorDelayThreshold_2";
@@ -513,6 +515,16 @@ public class TCAPStackImpl implements TCAPStack {
     }
 
     @Override
+    public void setSubSystemNumber(int subSystemNumber) throws Exception {
+        if (!this.started)
+            throw new Exception("SubSystemNumber parameter can be updated only when TCAP stack is running");
+
+        this.ssn = subSystemNumber;
+
+        this.store();
+    }
+
+    @Override
     public void setCongControl_ExecutorDelayThreshold_1(double congControlExecutorDelayThreshold1) throws Exception {
         if (!this.started)
             throw new Exception("CongControl_ExecutorDelayThreshold_1 parameter can be updated only when TCAP stack is running");
@@ -697,6 +709,7 @@ public class TCAPStackImpl implements TCAPStack {
             writer.write(this.maxDialogs, MAX_DIALOGS, Integer.class);
             writer.write(this.dialogIdRangeStart, DIALOG_ID_RANGE_START, Long.class);
             writer.write(this.dialogIdRangeEnd, DIALOG_ID_RANGE_END, Long.class);
+            writer.write(this.ssn, SUB_SYSTEM_NUMBER, Integer.class);
 
 //            writer.write(this.previewMode, PREVIEW_MODE, Boolean.class);
 
@@ -861,4 +874,5 @@ public class TCAPStackImpl implements TCAPStack {
     public SccpStack getSccpStack() {
         return this.sccpProvider.getSccpStack();
     }
+
 }

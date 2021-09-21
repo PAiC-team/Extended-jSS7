@@ -218,6 +218,11 @@ public class TcapManagementJmx implements TcapManagementJmxMBean, CounterMediato
     }
 
     @Override
+    public void setSubSystemNumber(int value) throws Exception {
+        this.wrappedTCAPStack.setSubSystemNumber(value);
+    }
+
+    @Override
     public void setCongControl_ExecutorDelayThreshold_1(double value) throws Exception {
         this.wrappedTCAPStack.setCongControl_ExecutorDelayThreshold_1(value);
     }

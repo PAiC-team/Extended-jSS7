@@ -392,4 +392,11 @@ public interface TCAPStack {
      */
     void setSwapTcapIdBytes(boolean isSwapTcapIdBytes);
 
+    /**
+     * Set Sub System Number (ssn)
+     *
+     * @return
+     * **/
+
+    void setSubSystemNumber(int setSubSystemNumber) throws Exception;
 }
