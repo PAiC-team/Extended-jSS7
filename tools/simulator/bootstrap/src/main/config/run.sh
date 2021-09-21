@@ -160,14 +160,13 @@ echo "  JAVA: $JAVA"
 echo ""
 echo "  JAVA_OPTS: $JAVA_OPTS"
 echo ""
-echo "  CLASSPATH: $SIMULATOR_CLASSPATH"
+echo "  CLASSPATH: .:$SIMULATOR_CLASSPATH:$SIMULATOR_ENDORSED_DIRS/*"
 echo ""
 echo "========================================================================="
 echo ""
 
       "$JAVA" $JAVA_OPTS \
-         -Djava.ext.dirs="$SIMULATOR_ENDORSED_DIRS" \
-         -classpath "$SIMULATOR_CLASSPATH" \
+         -classpath ".:$SIMULATOR_CLASSPATH:$SIMULATOR_ENDORSED_DIRS/*" \
          org.restcomm.protocols.ss7.tools.simulator.bootstrap.Main "$@"
       SIMULATOR_STATUS=$?
 
