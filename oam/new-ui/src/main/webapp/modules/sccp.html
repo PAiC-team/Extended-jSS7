@@ -1790,12 +1790,80 @@
 								});	
 					}		
 					
+					function parseLoadSharingAlgorithmToIntValue(loadSharingAlgorithm) {
+						let lsa;
+						switch (loadSharingAlgorithm) {
+							case "Bit0":
+								lsa = 2;
+								break;
+							case "Bit1":
+								lsa = 3;
+								break;
+							case "Bit2":
+								lsa = 4;
+								break;
+							case "Bit3":
+								lsa = 5;
+								break;
+							case "Bit4":
+								lsa = 6;
+								break;
+							default:
+								lsa = 1;
+								break;
+						}
+						return lsa;
+					}
+
+					function parseOriginationTypeToIntValue(originationType) {
+						let ot;
+						switch (originationType) {
+							case "ALL":
+								ot = 1;
+								break;
+							case "LOCAL":
+								ot = 2;
+								break;
+							case "REMOTE":
+								ot = 3;
+								break;
+							default:
+								ot = 1;
+								break;
+						}
+						return ot;
+					}
+
+					function parseRuleTypeToIntValue(ruleType) {
+						let rt;
+						switch (ruleType) {
+							case "SOLITARY":
+								rt = 1;
+								break;
+							case "DOMINANT":
+								rt = 2;
+								break;
+							case "LOADSHARED":
+								rt = 3;
+								break;
+							case "BROADCAST":
+								rt = 4;
+								break;
+							default:
+								rt = 1;
+								break;
+						}
+						return rt;
+					}
+					
 					function showEditRuleDialog(name,key,ruleType,loadSharingAlgorithm,originationType,aiInt,pc,ssn,tt,npInt,nai,digits,ruleMask,primaryAddressId,secondaryAddressId,newcgpartyAddressid,caiInt,cpc,cssn,ctt,cnpInt,cnai,cdigits,nid){
-						
+						let lsa = parseLoadSharingAlgorithmToIntValue(loadSharingAlgorithm);
+						let ot = parseOriginationTypeToIntValue(originationType);
+						let rt = parseRuleTypeToIntValue(ruleType);
 						$("#ruleIdm"+name).val(key);
-						$("#ruleTypeInputm"+name).val(ruleType);//
-						$("#ruleLoadShareInputm"+name).val(loadSharingAlgorithm);//
-						$("#ruleOrigTypeInputm"+name).val(originationType);//
+						$("#ruleTypeInputm"+name).val(rt);//
+						$("#ruleLoadShareInputm"+name).val(lsa);//
+						$("#ruleOrigTypeInputm"+name).val(ot);//
 						$("#ruleaddsindm"+name).val(aiInt);
 						$("#ruleaddspcm"+name).val(pc);
 						$("#ruleaddsssnm"+name).val(ssn);
@@ -3191,7 +3259,7 @@
 																	'   									<option value="1">Solitary</option>'+
 																	'       								<option value="2">Dominant</option>'+
 																	'       								<option value="3">Loadshared</option>'+
-																	'       								<option value="3">Broadcast</option>'+
+																	'       								<option value="4">Broadcast</option>'+
 																	'       							</select>'+
 																	'   							</span>'+	
 																	'							</div>'+	
@@ -3802,12 +3870,21 @@
 																	if(type==1) {																		
 																		tt=localtt;
 																		npInt = npToInteger(localnp);
-																		nai=aiToInteger(localnai);
+																		nai=naiToInteger(localnai);
 																	}
 																	else {
 																		ctt=localtt;
 																		cnpInt = npToInteger(localnp);
-																		cnai=aiToInteger(localnai);
+																		cnai=naiToInteger(localnai);
+																		if (ctt == "NA") {
+																			ctt = -1;
+																		}
+																		if (!cnpInt) {
+																			cnpInt = 0;
+																		}
+																		if (!cnai) {
+																			cnai = 0;
+																		}
 																	}
 
 																	return gtType;
