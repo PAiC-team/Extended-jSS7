@@ -193,8 +193,7 @@ public class AdditionalNumberImpl implements AdditionalNumber, MAPAsnPrimitive {
         if (this.mSCNumber == null && this.sGSNNumber == null)
             throw new MAPException("Error when encoding " + _PrimitiveName + ": both mscNumber and sgsnNumber must not be null");
         if (this.mSCNumber != null && this.sGSNNumber != null)
-            throw new MAPException("Error when encoding " + _PrimitiveName
-                    + ": both mscNumber and sgsnNumber must not be not null");
+            throw new MAPException("Error when encoding " + _PrimitiveName + ": both mscNumber and sgsnNumber must not be not null");
 
         if (this.mSCNumber != null) {
             ((ISDNAddressStringImpl) this.mSCNumber).encodeData(asnOutputStream);

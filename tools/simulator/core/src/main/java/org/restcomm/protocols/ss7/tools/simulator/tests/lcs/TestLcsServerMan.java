@@ -97,7 +97,6 @@ import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
 
 import org.restcomm.protocols.ss7.map.service.lsm.AddGeographicalInformationImpl;
 import org.restcomm.protocols.ss7.map.service.lsm.DeferredLocationEventTypeImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.ExtGeographicalInformationImpl;
 import org.restcomm.protocols.ss7.map.service.lsm.LCSClientNameImpl;
 import org.restcomm.protocols.ss7.map.service.lsm.PolygonImpl;
 import org.restcomm.protocols.ss7.map.service.lsm.PositioningDataInformationImpl;
@@ -272,7 +271,7 @@ public class TestLcsServerMan extends TesterBase implements TestLcsServerManMBea
             }
             logger.debug("\nRejectComponent sent");
             this.testerHost.sendNotif(SOURCE_NAME, "Sent: RejectComponent", createSRIforLCSResData(curDialog.getLocalDialogId(),
-                null, null), Level.INFO);
+                null, null, null), Level.INFO);
             return;
         }
         if (subId.equalsIgnoreCase("99990000")) {
@@ -285,7 +284,7 @@ public class TestLcsServerMan extends TesterBase implements TestLcsServerManMBea
             }
             logger.debug("\nErrorComponent sent");
             this.testerHost.sendNotif(SOURCE_NAME, "Sent: ErrorComponent", createSRIforLCSResData(curDialog.getLocalDialogId(),
-                null, null), Level.INFO);
+                null, null, null), Level.INFO);
             return;
         }
 
@@ -313,12 +312,46 @@ public class TestLcsServerMan extends TesterBase implements TestLcsServerManMBea
             }
             ISDNAddressString mlcNumber = sendRoutingInforForLCSRequest.getMLCNumber();
             String mscAddress = "598991800024";
-            String sgsnAddress = "598992000077";
             ISDNAddressString mscNumber = new ISDNAddressStringImpl(AddressNature.international_number,
                 NumberingPlan.ISDN, mscAddress);
-            ISDNAddressString sgsnNumber = new ISDNAddressStringImpl(AddressNature.international_number,
-                NumberingPlan.ISDN, sgsnAddress);
-            AdditionalNumber additionalNumber = new AdditionalNumberImpl(mscNumber, sgsnNumber);
+            String additionalMcsAddress = "598991800179";
+            String sgsnAddress = "598992000077";
+            ISDNAddressString additionalMcsNumber = null;
+            ISDNAddressString sgsnNumber = null;
+            AdditionalNumber additionalNumber = null;
+            Boolean gprsNodeIndicator = false;
+            int addNumRandom = rand.nextInt(5) + 1;
+            switch (addNumRandom) {
+                case 1:
+                    break;
+                case 2:
+                    gprsNodeIndicator = true;
+                    break;
+                case 3:
+                    additionalMcsNumber = new ISDNAddressStringImpl(AddressNature.international_number,
+                        NumberingPlan.ISDN, additionalMcsAddress);
+                    additionalNumber = new AdditionalNumberImpl(additionalMcsNumber, sgsnNumber);
+                    break;
+                case 4:
+                    gprsNodeIndicator = true;
+                    sgsnNumber = new ISDNAddressStringImpl(AddressNature.international_number,
+                        NumberingPlan.ISDN, sgsnAddress);
+                    additionalNumber = new AdditionalNumberImpl(additionalMcsNumber, sgsnNumber);
+                    break;
+                case 5:
+                    additionalMcsNumber = new ISDNAddressStringImpl(AddressNature.international_number,
+                        NumberingPlan.ISDN, additionalMcsAddress);
+                    additionalNumber = new AdditionalNumberImpl(additionalMcsNumber, sgsnNumber);
+                    gprsNodeIndicator = true;
+                    break;
+                default:
+                    additionalNumber = null; // not needed, just for being explicit about the default case
+                    gprsNodeIndicator = false; // not needed, just for being explicit about the default case
+                    break;
+            }
+
+            logger.warn("Additional Number onSendRoutingInfoForLCSRequest : " + additionalNumber);
+
             byte[] lmsiByte = null;
             int lmsiRandom = rand.nextInt(4) + 1;
             switch (lmsiRandom) {
@@ -340,7 +373,6 @@ public class TestLcsServerMan extends TesterBase implements TestLcsServerManMBea
                     break;
             }
             LMSI lmsi = new LMSIImpl(lmsiByte);
-            Boolean gprsNodeIndicator = false;
             boolean lcsCapabilitySetRelease98_99 = true;
             boolean lcsCapabilitySetRelease4 = true;
             boolean lcsCapabilitySetRelease5 = true;
@@ -352,8 +384,8 @@ public class TestLcsServerMan extends TesterBase implements TestLcsServerManMBea
             SupportedLCSCapabilitySets additionalLCSCapabilitySets = new SupportedLCSCapabilitySetsImpl(lcsCapabilitySetRelease98_99, lcsCapabilitySetRelease4,
                 lcsCapabilitySetRelease5, lcsCapabilitySetRelease6, lcsCapabilitySetRelease7);
             MAPExtensionContainer mapExtensionContainer = null;
-            String mmneNameStr = "mmec03.mmeer3000.mme.epc.mnc002.mcc748.3gppnetwork.org";
-            byte[] mme = mmneNameStr.getBytes();
+            String mmeNameStr = "mmec03.mmeer3000.mme.epc.mnc002.mcc748.3gppnetwork.org";
+            byte[] mme = mmeNameStr.getBytes();
             //byte[] mme = {77, 77, 69, 55, 52, 56, 48, 48, 48, 49};
             DiameterIdentity mmeName = new DiameterIdentityImpl(mme);
             String aaaServerNameStr = "aaa04.aaa3000.aaa.epc.mnc002.mcc748.3gppnetwork.org";
@@ -371,7 +403,7 @@ public class TestLcsServerMan extends TesterBase implements TestLcsServerManMBea
             GSNAddress additionalVGmlcAddress = new GSNAddressImpl(gsnAddressAddressType, addVGmlcAddressData);
 
             LCSLocationInfo lcsLocationInfo = mapFactory.createLCSLocationInfo(mscNumber, lmsi, mapExtensionContainer, gprsNodeIndicator,
-                null, supportedLCSCapabilitySets, additionalLCSCapabilitySets, mmeName, aaaServerName);
+                additionalNumber, supportedLCSCapabilitySets, additionalLCSCapabilitySets, mmeName, aaaServerName);
 
             int sriLcsResponseDelay = rand.nextInt(150);
             try {
@@ -389,7 +421,7 @@ public class TestLcsServerMan extends TesterBase implements TestLcsServerManMBea
             this.countMapLcsResp++;
 
             this.testerHost.sendNotif(SOURCE_NAME, "Sent: SendRoutingForLCSResponse",
-                createSRIforLCSResData(curDialog.getLocalDialogId(), mscNumber, targetMS), Level.INFO);
+                createSRIforLCSResData(curDialog.getLocalDialogId(), mscNumber, targetMS, additionalNumber), Level.INFO);
 
         } catch (MAPException me) {
             logger.debug("Failed building SendRoutingInfoForLCS response " + me.toString());
@@ -420,13 +452,24 @@ public class TestLcsServerMan extends TesterBase implements TestLcsServerManMBea
     }
 
 
-    private String createSRIforLCSResData(long dialogId, ISDNAddressString networkNodeNumber, SubscriberIdentity targetMS) {
+    private String createSRIforLCSResData(long dialogId, ISDNAddressString networkNodeNumber, SubscriberIdentity targetMS,
+                                          AdditionalNumber additionalNumber) {
         StringBuilder sb = new StringBuilder();
         sb.append("dialogId=");
         sb.append(dialogId);
         if (networkNodeNumber != null) {
             sb.append(", networkNodeNumber=\"");
             sb.append(networkNodeNumber.getAddress());
+        }
+        if (additionalNumber != null) {
+            if (additionalNumber.getMSCNumber() != null) {
+                sb.append(", Additional MSC Number=\"");
+                sb.append(targetMS.getMSISDN());
+            }
+            if (additionalNumber.getSGSNNumber() != null) {
+                sb.append(", Additional SGSN Number=\"");
+                sb.append(targetMS.getIMSI());
+            }
         }
         if (targetMS != null) {
             if (targetMS.getMSISDN() != null) {
@@ -450,7 +493,8 @@ public class TestLcsServerMan extends TesterBase implements TestLcsServerManMBea
             "Rcvd: SendRoutingInfoForLCSResponse", this
                 .createSRIforLCSResData(curDialog.getLocalDialogId(),
                     sendRoutingInforForLCSResponseIndication.getLCSLocationInfo().getNetworkNodeNumber(),
-                    sendRoutingInforForLCSResponseIndication.getTargetMS()),
+                    sendRoutingInforForLCSResponseIndication.getTargetMS(),
+                    sendRoutingInforForLCSResponseIndication.getLCSLocationInfo().getAdditionalNumber()),
             Level.INFO);
 
     }
@@ -630,7 +674,7 @@ public class TestLcsServerMan extends TesterBase implements TestLcsServerManMBea
                 provideSubscriberLocationRequest.getPeriodicLDRInfo()
             ), Level.INFO);
 
-        byte[] geranPosInfo = {50, 57, 49, 53, 50};
+        byte[] geranPosInfo = {0, 3};
         PositioningDataInformation geranPositioningData = new PositioningDataInformationImpl(geranPosInfo);
         Integer ageOfLocationEstimate = 0;
         AddGeographicalInformation additionalLocationEstimate = null;
@@ -676,7 +720,7 @@ public class TestLcsServerMan extends TesterBase implements TestLcsServerManMBea
         int confidence, altitude, innerRadius;
         EllipsoidPoint ellipsoidPoint1, ellipsoidPoint2, ellipsoidPoint3, ellipsoidPoint4, ellipsoidPoint5, ellipsoidPoint6, ellipsoidPoint7,
             ellipsoidPoint8, ellipsoidPoint9, ellipsoidPoint10, ellipsoidPoint11, ellipsoidPoint12, ellipsoidPoint13, ellipsoidPoint14, ellipsoidPoint15;
-        int numberOfPoints = 6; // 3 <= numberOfPoints <= 15
+        // 3 <= numberOfPoints <= 15
         int typeOfShapeRandomOption = rand.nextInt(6) + 1;
         switch (typeOfShapeRandomOption) {
             case 1:
@@ -752,20 +796,8 @@ public class TestLcsServerMan extends TesterBase implements TestLcsServerManMBea
                 typeOfShape = TypeOfShape.Polygon;
                 latitude = 0.0;
                 longitude = 0.0;
-                uncertainty = -1;
-                uncertaintySemiMajorAxis = -1;
-                uncertaintySemiMinorAxis = -1;
-                angleOfMajorAxis = -1;
-                confidence = -1;
-                altitude = -1;
-                uncertaintyAltitude = -1;
-                innerRadius = -1;
-                uncertaintyRadius = -1;
-                offsetAngle = -1;
-                includedAngle = -1;
                 try {
-                    locationEstimate = new ExtGeographicalInformationImpl(typeOfShape, latitude, longitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis,
-                        angleOfMajorAxis, confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyRadius, offsetAngle, includedAngle);
+                    locationEstimate = mapParameterFactory.createExtGeographicalInformation_EllipsoidPoint(latitude, longitude);
                 } catch (MAPException e) {
                     e.printStackTrace();
                 }
@@ -1265,20 +1297,8 @@ public class TestLcsServerMan extends TesterBase implements TestLcsServerManMBea
                     typeOfShape = TypeOfShape.Polygon;
                     latitude = 0.0;
                     longitude = 0.0;
-                    uncertainty = -1;
-                    uncertaintySemiMajorAxis = -1;
-                    uncertaintySemiMinorAxis = -1;
-                    angleOfMajorAxis = -1;
-                    confidence = -1;
-                    altitude = -1;
-                    uncertaintyAltitude = -1;
-                    innerRadius = -1;
-                    uncertaintyRadius = -1;
-                    offsetAngle = -1;
-                    includedAngle = -1;
                     try {
-                        locationEstimate = new ExtGeographicalInformationImpl(typeOfShape, latitude, longitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis,
-                            angleOfMajorAxis, confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyRadius, offsetAngle, includedAngle);
+                        locationEstimate = mapParameterFactory.createExtGeographicalInformation_EllipsoidPoint(latitude, longitude);
                     } catch (MAPException e) {
                         e.printStackTrace();
                     }
@@ -1376,7 +1396,7 @@ public class TestLcsServerMan extends TesterBase implements TestLcsServerManMBea
 
             MAPExtensionContainer extensionContainer = null;
 
-            byte[] geranPosInfo = {50, 57, 49, 53, 51};
+            byte[] geranPosInfo = {0, 3};
             PositioningDataInformation geranPositioningData = new PositioningDataInformationImpl(geranPosInfo);
             byte[] utranData = {57, 51, 52, 54, 48, 49};
             UtranPositioningDataInfo utranPositioningDataInfo = new UtranPositioningDataInfoImpl(utranData);
@@ -1611,25 +1631,12 @@ public class TestLcsServerMan extends TesterBase implements TestLcsServerManMBea
                     typeOfShape = TypeOfShape.Polygon;
                     latitude = 0.0;
                     longitude = 0.0;
-                    uncertainty = -1;
-                    uncertaintySemiMajorAxis = -1;
-                    uncertaintySemiMinorAxis = -1;
-                    angleOfMajorAxis = -1;
-                    confidence = -1;
-                    altitude = -1;
-                    uncertaintyAltitude = -1;
-                    innerRadius = -1;
-                    uncertaintyRadius = -1;
-                    offsetAngle = -1;
-                    includedAngle = -1;
                     try {
-                        locationEstimate = new ExtGeographicalInformationImpl(typeOfShape, latitude, longitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis,
-                            angleOfMajorAxis, confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyRadius, offsetAngle, includedAngle);
+                        locationEstimate = mapParameterFactory.createExtGeographicalInformation_EllipsoidPoint(latitude, longitude);
                     } catch (MAPException e) {
                         e.printStackTrace();
                     }
                     break;
-
             }
 
             int additionalLocationEstimateRandomOption = rand.nextInt(6) + 1;
