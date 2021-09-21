@@ -1266,8 +1266,8 @@ public class M3UAManagementImpl extends Mtp3UserPartBaseImpl implements M3UAMana
     }
 
     @Override
-    public void setErrorRetryAction(ErrorRetryAction retryAction) {
-        M3UAErrorManagementState.getInstance().addErrorAction((ErrorRetryActionImpl) retryAction);
+    public void setErrorRetryAction(int errorCode, String name, int retryCount) {
+        M3UAErrorManagementState.getInstance().addErrorAction(new ErrorRetryActionImpl(errorCode, name, retryCount));
     }
 
     @Override
@@ -1276,8 +1276,8 @@ public class M3UAManagementImpl extends Mtp3UserPartBaseImpl implements M3UAMana
     }
 
     @Override
-    public void removeErrorAction(ErrorRetryAction errorAction) {
+    public void removeErrorAction(int errorCode, String name, int retryCount) {
         // remove the error action from the list.
-        M3UAErrorManagementState.getInstance().removeErrorAction(errorAction);
+        M3UAErrorManagementState.getInstance().removeErrorAction(new ErrorRetryActionImpl(errorCode, name, retryCount));
     }
 }

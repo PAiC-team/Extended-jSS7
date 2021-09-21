@@ -893,8 +893,8 @@ public class M3uaManagementJmx implements M3uaManagementJmxMBean, M3UAManagement
     }
 
     @Override
-    public void setErrorRetryAction(ErrorRetryAction retryAction) {
-        M3UAErrorManagementState.getInstance().addErrorAction((ErrorRetryActionImpl) retryAction);
+    public void setErrorRetryAction(int errorCode, String name, int retryCount) {
+        M3UAErrorManagementState.getInstance().addErrorAction(new ErrorRetryActionImpl(errorCode, name, retryCount));
     }
 
     @Override
@@ -904,8 +904,8 @@ public class M3uaManagementJmx implements M3uaManagementJmxMBean, M3UAManagement
     }
 
     @Override
-    public void removeErrorAction(ErrorRetryAction errorAction) {
-        M3UAErrorManagementState.getInstance().removeErrorAction(errorAction);
+    public void removeErrorAction(int errorCode, String name, int retryCount) {
+        M3UAErrorManagementState.getInstance().removeErrorAction(new ErrorRetryActionImpl(errorCode, name, retryCount));
     }
 
     @Override

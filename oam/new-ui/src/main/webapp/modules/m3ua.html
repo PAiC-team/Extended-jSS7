@@ -332,6 +332,72 @@
 									}
 								});		
 					}
+
+					function addM3UAError(name){
+						var formInvalid = false;
+
+					    var e = document.getElementById("nameError"+name);
+						var selectedValue = e.options[e.selectedIndex].value;
+						var values = selectedValue.split("-");
+
+						var errorCode = values[0];
+						var errorName = values[1];
+						var retryCount = $("#retry"+name).val();
+
+						console.log(errorCode)
+						console.log(errorName)
+						console.log(retryCount)
+
+					    if($("#retry"+name).val().length === 0) {
+					    	formInvalid = true;
+						    $("#retry"+name).parent().parent().addClass("error");
+						} else {
+							$("#retry"+name).parent().parent().removeClass("error");
+						}
+
+						if(formInvalid) {
+							$("#create-m3ua-error"+name).show();
+							logToConsole("ERROR", "Some Fields are not correctly filled out, please double check!");
+							return false;
+						} else {
+							$("#create-m3ua-error"+name).hide();
+						}
+
+						mbeanSearch="org.restcomm.ss7:layer=M3UA,type=Management,name="+name;
+						jolokia.execute(mbeanSearch,"setErrorRetryAction(int,java.lang.String,int)",errorCode,errorName,retryCount,
+								{
+									success: function(value) {
+										$('#entities-modal-error'+name).modal('hide');
+										refreshM3uaList();
+										logToConsole('INFO', 'Successfully added error for ' + name );
+									},
+									error: function(value){
+										errorUID = ("st" + new Date().getTime()).hashCode();
+										createStackTrace(errorUID, value.stacktrace);
+										logToConsole("ERROR", value.error + ". (<a href=\"#" + errorUID + "-modal\" data-toggle=\"modal\">Full Stack Trace</a>)");
+									}
+								});
+					}
+
+					function deleteM3UAError(errorName, errorCode, retryCount,mtp3name){
+						console.log(`name=${errorName}, code=${errorCode}, retry=${retryCount}, Mtp3Name=${mtp3name}`)
+						mbeanSearch="org.restcomm.ss7:layer=M3UA,type=Management,name="+mtp3name;
+						console.log(mbeanSearch)
+						jolokia.execute(mbeanSearch,"removeErrorAction(int,java.lang.String,int)",errorCode,errorName,retryCount,
+								{
+									success: function(value) {
+										$('#entities-modal-error'+name).modal('hide');
+										refreshM3uaList();
+										logToConsole('INFO', 'Successfully removed error from ' + name );
+									},
+									error: function(value){
+										errorUID = ("st" + new Date().getTime()).hashCode();
+										console.log(value)
+										createStackTrace(errorUID, value.stacktrace);
+										logToConsole("ERROR", value.error + ". (<a href=\"#" + errorUID + "-modal\" data-toggle=\"modal\">Full Stack Trace</a>)");
+									}
+								});
+					}
 					
 					
 					function addAS(name){
@@ -471,6 +537,7 @@
 															var aspfactories = response.value.Aspfactories;
 															var appServers = response.value.AppServers;
 															var routes = response.value.Route;
+															var errors = response.value.ErrorRetry;
 															
 															
 															
@@ -480,6 +547,7 @@
 																	'		<li><a href="#aspFactories'+name+'" data-toggle="tab"><i style="color: #CC9522;" class="icon-map-marker"></i> AspFactories</a></li>'+
 																	'		<li><a href="#applicationServers'+name+'" data-toggle="tab"><i style="color: #CC9522;" class="icon-cog"></i> ApplicationServers</a></li>'+
 																	'		<li><a href="#routes'+name+'" data-toggle="tab"><i style="color: #CC9522;" class="icon-list-alt"></i> Routers</a></li>'+
+																	'		<li><a href="#errorManagement'+name+'" data-toggle="tab"><i style="color: #CC9522;" class="icon-list"></i> Error Management</a></li>'+
 																	'	</ul>	'+
 																	''+
 																	'	<div class="tab-content">'+
@@ -930,6 +998,86 @@
 																	'				</div>'+					
 																	'				<div class="modal-footer">'+
 																	'					<a href="#" onclick="$(\'#entities-modal-routes'+name+'\').modal(\'hide\'); return false;" class="btn">Close</a>'+
+																    '				</div>'+
+																	'			</div>'+
+																	'		</div>'+
+
+																	'		<div class="tab-pane" id="errorManagement'+name+'">'+
+																	'			<table id="no-error-list-table'+name+'" class="table" style="display: none;">'+
+																	'				<tr>'+
+																	'					<td>'+
+																	'						<div class="alert alert-warning fade in text-center" >'+
+																	'							<h2>No M3UA errors has been defined yet.</h2>'+
+																	'						</div>'+
+																	'					</td>'+
+																	'				</tr>'+
+																	'			</table>'+
+																	'			<table id="error-list-table'+name+'" class="table table-hover">'+
+																	'				<thead>'+
+																	'					<tr>'+
+																	'					<th style="width: 30px;">&nbsp;</th>'+
+																	'					<th>Name</th>'+
+																	'					<th>Code</th>'+
+																	'					<th>Retry</th>'+
+																	'					<th style="width: 30px;">&nbsp;</th>'+
+																	'					</tr>'+
+																	'				</thead>'+
+																	'				<tbody>'+
+																	'				</tbody>'+
+																	'			</table>'+
+																	'			<a href="#entities-modal-error'+name+'" role="button" class="btn btn-info btn-small" data-toggle="modal" ><i class="icon-external-link"></i> Create M3UA error</a>'+
+																	'			<div id="entities-modal-error'+name+'" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">'+
+																	'				<div class="modal-header">'+
+																	'					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'+
+																	'					<h3><i class="icon-list-alt" style="color: #CC9522;"></i> Create M3UA Error</h3>'+
+																	'				</div>'+
+																	'				<div id="entities-modal-body" class="modal-body">'+
+																	'					<div class="alert alert-error" id="create-m3ua-error'+name+'" style="display:none;">'+
+																	'					  <button type="button" class="close">&times;</button>'+
+																	'					  Some Fields are not correctly filled out, please double check the settings below !'+
+																	'					</div>'+
+																	'					<p>'+
+																	'						<span>'+
+
+																	'							<div class="control-group" >'+
+																	'   							<span class="input-prepend" data-toggle="tooltip" data-placement="bottom" title="Error Name">'+
+																	'       							<span class="add-on">Error Name</span>'+
+																	'   								<select id="nameError'+name+'" >'+
+																	'										<option value="1-Invalid_Version">1 - Invalid_Version</option>' +
+																	'										<option value="3-Unsupported_Message_Class">3 - Unsupported_Message_Class</option>' +
+																	'										<option value="4-Unsupported_Message_Type">4 - Unsupported_Message_Type</option>' +
+																	'										<option value="5-Unsupported_Traffic_Mode_Type">5 - Unsupported_Traffic_Mode_Type</option>' +
+																	'										<option value="6-Unexpected_Message">6 - Unexpected_Message</option>' +
+																	'										<option value="7-Protocol_Error">7 - Protocol_Error</option>' +
+																	'										<option value="9-Invalid_Stream_Identifier">9 - Invalid_Stream_Identifier</option>' +
+																	'										<option value="13-Refused_Management_Blocking">13 - Refused_Management_Blocking</option>' +
+																	'										<option value="14-ASP_Identifier_Required">14 - ASP_Identifier_Required</option>' +
+																	'										<option value="15-Invalid_ASP_Identifier">15 - Invalid_ASP_Identifier</option>' +
+																	'										<option value="17-Invalid_Parameter_Value">17 - Invalid_Parameter_Value</option>' +
+																	'										<option value="18-Parameter_Field_Error">18 - Parameter_Field_Error</option>' +
+																	'										<option value="19-Unexpected_Parameter">19 - Unexpected_Parameter</option>' +
+																	'										<option value="20-Destination_Status_Unknown">20 - Destination_Status_Unknown</option>' +
+																	'										<option value="21-Invalid_Network_Appearance">21 - Invalid_Network_Appearance</option>' +
+																	'										<option value="22-Missing_Parameter">22 - Missing_Parameter</option>' +
+																	'										<option value="25-Invalid_Routing_Context">25 - Invalid_Routing_Context</option>' +
+																	'										<option value="26-No_Configured_AS_for_ASP">26 - No_Configured_AS_for_ASP</option>' +
+																	'       							</select>'+
+																	'   							</span>'+
+																	'							</div>'+
+
+																	'							<div class="control-group">'+
+																	' 								<span class="input-prepend" data-toggle="tooltip" data-placement="bottom" title="Retry Count">'+
+																	'									<span class="add-on">Retry Count</span>'+
+																	'									<input id="retry'+name+'" type="number" class="input-mini" style="width: 200px; margin-right: 12px; text-align: center;" placeholder="Retry" />'+
+																	'  								</span>'+
+																	'							</div>'+
+
+																	'							<button id="add-m3ua-error-btn'+name+'" onclick="addM3UAError(\'' + name + '\');" class="btn btn btn-primary" >Create</button> '+
+																	'						</span>'+
+																	'					</p>'+
+																	'				</div>'+
+																	'				<div class="modal-footer">'+
+																	'					<a href="#" onclick="$(\'#entities-modal-error'+name+'\').modal(\'hide\'); return false;" class="btn">Close</a>'+
 																    '				</div>'+
 																	'			</div>'+
 																	'		</div>'+
@@ -1429,7 +1577,34 @@
 															}else {
 																$('#no-routes-list-table'+name).hide();
 																$('#routes-list-table'+name).show();
-															}															
+															}
+
+															$('.error-row'+name).remove();
+															var noOfError = 0;
+															jQuery.each(errors, function() {
+																noOfError = noOfError + 1;
+																var errorsTmp = this;
+																var errorName = errorsTmp.name;
+																var errorCode = errorsTmp.errorCode;
+																var retryCount = errorsTmp.retryCount;
+																$('#error-list-table'+name).children('tbody').append('<tr class="error-row'+name+'"><td style="vertical-align: middle; text-align: center;"><i style="color: #CC9522;" class="icon-map-marker"></i></td>' +
+																		'<td>' + errorName + '</td>' +
+																		'<td>' + errorCode + '</td>' +
+																		'<td>' + retryCount + '</td>' +
+																		'<td style="font-size: 16px; vertical-align: middle; text-align: center; width: 100px;">' +
+																		'<button class="btn btn-small btn-danger" style="background: none !important; background-color: #8B232E !important;" data-toggle="tooltip" title="Delete M3UA error" data-placement="bottom" onclick="deleteM3UAError(\'' + errorName +  '\',\'' + errorCode +  '\',\'' + retryCount +  '\',\'' + name +  '\')"><i class="icon-trash"> </i></button> ' +
+																	    '</td></tr>'
+																);
+															});
+
+
+															if(noOfError== 0){
+																$('#no-error-list-table'+name).show();
+																$('#error-list-table'+name).hide();
+															}else {
+																$('#no-error-list-table'+name).hide();
+																$('#error-list-table'+name).show();
+															}
 															
 														}],
 														error: function(value){

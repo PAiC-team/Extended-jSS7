@@ -19,7 +19,6 @@ import org.restcomm.protocols.ss7.m3ua.IPSPType;
 import org.restcomm.protocols.ss7.m3ua.RouteAs;
 import org.restcomm.protocols.ss7.m3ua.impl.AsImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.AspFactoryImpl;
-import org.restcomm.protocols.ss7.m3ua.impl.ErrorRetryActionImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.M3UAManagementImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.parameter.ParameterFactoryImpl;
 import org.restcomm.protocols.ss7.m3ua.parameter.NetworkAppearance;
@@ -736,11 +735,10 @@ public class M3UAShellExecutor implements ShellExecutor {
             if (retryCount < -1) {
                 retryCount = -1;
             }
-            ErrorRetryAction errorAction = new ErrorRetryActionImpl(errorCode, errorName, retryCount);
 
             this.setDefaultValue();
-            this.m3uaManagement.setErrorRetryAction(errorAction);
-            return String.format(M3UAOAMMessages.M3UA_ERROR_MANAGEMENT_ADD_SUCCESS, errorAction.getErrorCode());
+            this.m3uaManagement.setErrorRetryAction(errorCode, errorName, retryCount);
+            return String.format(M3UAOAMMessages.M3UA_ERROR_MANAGEMENT_ADD_SUCCESS, errorCode);
         } catch (NumberFormatException e) {
             logger.error(e.getMessage());
         }
@@ -792,7 +790,7 @@ public class M3UAShellExecutor implements ShellExecutor {
             if (errorActionToDelete == null) {
                 return M3UAOAMMessages.ERROR_CODE_NOT_DEFINED;
             }
-            this.m3uaManagement.removeErrorAction(errorActionToDelete);
+            this.m3uaManagement.removeErrorAction(errorActionToDelete.getErrorCode(), errorActionToDelete.getName(), errorActionToDelete.getRetryCount());
 
             return M3UAOAMMessages.ERROR_CODE_REMOVED_SUCCESS;
         } catch(NumberFormatException e) {

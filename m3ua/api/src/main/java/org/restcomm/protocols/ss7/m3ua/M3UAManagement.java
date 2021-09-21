@@ -334,9 +334,9 @@ public interface M3UAManagement {
 
     void setRoutingKeyManagementEnabled(boolean routingKeyManagementEnabled);
 
-    void setErrorRetryAction(ErrorRetryAction errorRetryAction);
+    void setErrorRetryAction(int errorCode, String name, int retryCount);
 
     List<ErrorRetryAction> getErrorRetry();
 
-    void removeErrorAction(ErrorRetryAction errorRetryAction);
+    void removeErrorAction(int errorCode, String name, int retryCount);
 }
