@@ -711,7 +711,7 @@ public class TCAPStackImpl implements TCAPStack {
             writer.write(this.dialogIdRangeEnd, DIALOG_ID_RANGE_END, Long.class);
             writer.write(this.ssn, SUB_SYSTEM_NUMBER, Integer.class);
 
-//            writer.write(this.previewMode, PREVIEW_MODE, Boolean.class);
+            writer.write(this.previewMode, PREVIEW_MODE, Boolean.class);
 
             writer.write(this.doNotSendProtocolVersion, DO_NOT_SEND_PROTOCOL_VERSION, Boolean.class);
 
@@ -750,8 +750,6 @@ public class TCAPStackImpl implements TCAPStack {
 
             writer.write(this.slsRange.toString(), SLS_RANGE, String.class);
 
-            writer.write(this.statisticsEnabled, STATISTICS_ENABLED, Boolean.class);
-
             writer.write(this.isSwapTcapIdBytes, SWAP_TCAP_ID_BYTES, Boolean.class);
 
 
@@ -775,8 +773,8 @@ public class TCAPStackImpl implements TCAPStack {
             reader.setBinding(binding);
             load(reader);
         } catch (XMLStreamException ex) {
-            // this.logger.info(
-            // "Error while re-creating Linksets from persisted file", ex);
+            this.logger.error(
+                    String.format("Error while reading the TCAP Resource state in file=%s", persistFile), ex);
         }
     }
 
@@ -796,10 +794,13 @@ public class TCAPStackImpl implements TCAPStack {
             vall = reader.read(DIALOG_ID_RANGE_END, Long.class);
             if (vall != null)
                 this.dialogIdRangeEnd = vall;
-
-            Boolean volb = reader.read(PREVIEW_MODE, Boolean.class);
-
-            volb = reader.read(DO_NOT_SEND_PROTOCOL_VERSION, Boolean.class);
+            Integer subSystemNumber = reader.read(SUB_SYSTEM_NUMBER, Integer.class);
+            if (subSystemNumber != null)
+                this.ssn = subSystemNumber;
+            Boolean pm = reader.read(PREVIEW_MODE, Boolean.class);
+            if (pm != null)
+                this.previewMode = pm;
+            Boolean volb = reader.read(DO_NOT_SEND_PROTOCOL_VERSION, Boolean.class);
             if (volb != null)
                 this.doNotSendProtocolVersion = volb;
 
@@ -848,10 +849,6 @@ public class TCAPStackImpl implements TCAPStack {
             String vals = reader.read(SLS_RANGE, String.class);
             if (vals != null)
                 this.slsRange = Enum.valueOf(SlsRangeType.class, vals);
-
-            volb = reader.read(STATISTICS_ENABLED, Boolean.class);
-            if (volb != null)
-                this.statisticsEnabled = volb;
 
             volb = reader.read(SWAP_TCAP_ID_BYTES, Boolean.class);
             if (volb != null)
