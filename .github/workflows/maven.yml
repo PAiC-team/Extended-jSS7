@@ -25,8 +25,12 @@ jobs:
     - name: maven-settings
       uses: s4u/maven-settings-action@v2
       with:
-        ervers: '[{"id": "github", "username": "PAiC-team", "password": "${GITHUB_TOKEN_REF}"}]'
+        servers: '[{"id": "github", "username": "PAiC-team", "password": "${GITHUB_TOKEN_REF}"}]'
         githubServer: false
+    - name: prebuild installations
+      run: |
+            chmod +x "${GITHUB_WORKSPACE}/.github/downloadartifact.sh"
+            "${GITHUB_WORKSPACE}/.github/downloadartifact.sh"
     - name: Build with Maven
       run: mvn -B clean verify -Dmaven.test.skip=true --file pom.xml
       env:
