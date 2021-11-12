@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# change to the tmp directory for the installation of the following dependencies
+cd /tmp
 # see README.md for more details
 wget https://www.dialogic.com/files/DSI/developmentpackages/linux/dpklnx.Z
 tar --no-same-owner -zxvf dpklnx.Z
