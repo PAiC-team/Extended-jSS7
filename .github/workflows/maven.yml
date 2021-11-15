@@ -22,15 +22,18 @@ jobs:
         java-version: '11'
         check-latest: true
     - name: maven-settings
-      uses: s4u/maven-settings-action@v2
+      uses: whelk-io/maven-settings-xml-action@v20
       with:
-        servers: '[{"id": "github", "username": "PAiC-team", "password": "${GITHUB_TOKEN_REF}"}]'
-        githubServer: false
+        repositories: '[{ "id": "central", "url": "https://repo1.maven.org/maven2" },{ "id": "github", "url": "https://maven.pkg.github.com/PAiC-team/*", "snapshots": {"enabled":true}}]'
+        servers: |
+          [{
+              "id": "github",
+              "username": "PAiC-team",
+              "password": "${{ secrets.ACTION_BUILD_TOKEN }}"
+          }]        
     - name: prebuild installations
       run: |
         chmod +x "${GITHUB_WORKSPACE}/.github/workflows/downloadartifact.sh"
         "${GITHUB_WORKSPACE}/.github/workflows/downloadartifact.sh"
     - name: Build with Maven
       run: mvn -B clean verify -Dmaven.test.skip=true --file pom.xml
-      env:
-          GITHUB_TOKEN_REF: ${{ secrets.GITHUB_ACTION_BUILD_TOKEN }}
