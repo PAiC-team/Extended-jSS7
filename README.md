@@ -30,6 +30,9 @@ The Open Source Software gives you the flexibility to understand the readily ava
 * `Maven 3.2.X`: Instructions for using Maven, including install, can be found at http://maven.apache.org/
 * `Ant 1.9.X`: Instructions for using Ant, including install, can be found at http://ant.apache.org
 * `jmxtools:jar`:  This library is required to build the Simulator source code. The library `com.sun.jdmk:jmxtools:jar:1.2.1` must be downloaded manually and placed in your maven repository. Instructions are provided below.
+* The SCTP is required to build the Extended jSS7. To have the artifact from SCTP available before building the Extended jSS7, one can either
+  * Build the SCTP from the source. The repository for SCTP is: [GitHub - PAiC-team/extended-sctp](https://github.com/PAiC-team/extended-sctp)  or
+  * Download the artifact from [PAiC-team - Packages](https://github.com/PAiC-team?tab=packages) and make it available in the local maven repository. Instead of manually downloading the package and installing it locally, you can configure the Github package registry in your maven settings by following the instruction from this link [Working with the Apache Maven registry - GitHub Docs](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry)
 
 
 Here is the list of commands you need to run for building Extended-jSS7 from the source:
